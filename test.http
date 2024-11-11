@@ -1,0 +1,15 @@
+POST http://localhost:5248
+Content-Type: application/json
+
+{
+    "device": "Смартфон",
+    "problemType": "Экран",
+    "problemDesc": "Экран не реагирует на прикосновения",
+    "client": "Петр Петров"
+}
+
+
+
+
+###
+GET http://localhost:5248
