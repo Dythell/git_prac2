@@ -1,5 +1,18 @@
+using Microsoft.AspNetCore.Mvc;
+
 var builder = WebApplication.CreateBuilder(args);
+
+builder.Services.AddCors(options =>
+{
+    options.AddPolicy("AllowAnyOrigin",
+        policy => policy.AllowAnyOrigin()
+                         .AllowAnyMethod()
+                         .AllowAnyHeader());
+});
+
 var app = builder.Build();
+
+app.UseCors("AllowAnyOrigin");
 
 
 List<order> bd = new List<order>()
@@ -23,6 +36,7 @@ app.MapPost("/", (order newOrder) =>
 
     return Results.Created($"/{newOrder.Number}", newOrder);
 });
+
 
 app.MapPost("/{orderNumber}", (int orderNumber, OrderUpdate orderUpdate) =>
 {
@@ -53,13 +67,6 @@ app.MapPost("/{orderNumber}", (int orderNumber, OrderUpdate orderUpdate) =>
 
 
 app.Run();
-enum OrderStatus
-{
-    в_ожидании = 1,
-    в_работе = 2,
-    выполнено = 3,
-    не_выполнено = 4,
-}
 
 class order
 {
