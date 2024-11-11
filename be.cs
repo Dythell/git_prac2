@@ -4,7 +4,7 @@ var app = builder.Build();
 
 List<order> bd = new List<order>()
 {
-    new order(1, DateTime.Now, "Ноутбук", "Проблема с экраном", "Экран треснул", "Иван Иванов", OrderStatus.в_ожидании)
+    new order(1, DateTime.Now, "Ноутбук", "Проблема с экраном", "Экран треснул", "Иван Иванов", "в ожидании")
 };
 
 app.MapGet("/", () => bd);
@@ -13,7 +13,11 @@ app.MapPost("/", (order newOrder) =>
 {
     newOrder.Number = bd.Any() ? bd.Max(o => o.Number) + 1 : 1;
     newOrder.DateAdd = DateTime.Now;
-    newOrder.Status = OrderStatus.в_ожидании;
+
+    if (string.IsNullOrEmpty(newOrder.Status))
+    {
+        newOrder.Status = "в_ожидании";
+    }
 
     bd.Add(newOrder);
 
@@ -38,10 +42,10 @@ class order
     public string ProblemType { get; set; }
     public string ProblemDesc { get; set; }
     public string Client { get; set; }
-    public OrderStatus Status { get; set; } = OrderStatus.в_ожидании;
-    public string? Master { get; set; } = "Не назначен";
+    public string Status { get; set; } = "в_ожидании";
+    public string Master { get; set; } = "Не назначен";
 
-    public order(int number, DateTime dateAdd, string device, string problemType, string problemDesc, string client, OrderStatus status)
+    public order(int number, DateTime dateAdd, string device, string problemType, string problemDesc, string client, string status)
     {
         Number = number;
         DateAdd = dateAdd;
