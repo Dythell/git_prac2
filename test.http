@@ -15,7 +15,8 @@ Content-Type: application/json
 ###
 GET http://localhost:5248
 
-####
+
+###
 POST http://localhost:5248
 Content-Type: application/json
 
@@ -24,4 +25,17 @@ Content-Type: application/json
     "problemType": "Экран",
     "problemDesc": "Экран не реагирует на прикосновения",
     "client": "Петр Петров"
+}
+
+
+
+
+###
+POST http://localhost:5248/1
+Content-Type: application/json
+
+{
+  "Status": "выполнено",
+  "ProblemDesc": "Экран заменен",
+  "Master": "Иванов"
 }

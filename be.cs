@@ -24,6 +24,33 @@ app.MapPost("/", (order newOrder) =>
     return Results.Created($"/{newOrder.Number}", newOrder);
 });
 
+app.MapPost("/{orderNumber}", (int orderNumber, OrderUpdate orderUpdate) =>
+{
+    var orderToUpdate = bd.FirstOrDefault(o => o.Number == orderNumber);
+
+    if (orderToUpdate == null)
+    {
+        return Results.NotFound(new { Message = $"Заявка с номером {orderNumber} не найдена" });
+    }
+
+    if (!string.IsNullOrEmpty(orderUpdate.Status))
+    {
+        orderToUpdate.Status = orderUpdate.Status;
+    }
+
+    if (!string.IsNullOrEmpty(orderUpdate.ProblemDesc))
+    {
+        orderToUpdate.ProblemDesc = orderUpdate.ProblemDesc;
+    }
+
+    if (!string.IsNullOrEmpty(orderUpdate.Master))
+    {
+        orderToUpdate.Master = orderUpdate.Master;
+    }
+
+    return Results.Ok(orderToUpdate);
+});
+
 
 app.Run();
 enum OrderStatus
@@ -55,4 +82,11 @@ class order
         Client = client;
         Status = status;
     }
+}
+
+public class OrderUpdate
+{
+    public string Status { get; set; }
+    public string ProblemDesc { get; set; }
+    public string Master { get; set; }
 }
