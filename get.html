@@ -18,6 +18,7 @@
                     <th>Клиент</th>
                     <th>Статус</th>
                     <th>Мастер</th>
+                    <th>Комментарий</th>
                 </tr>
             </thead>
             <tbody>
@@ -49,6 +50,7 @@
                             <td>${order.client}</td>
                             <td>${order.status}</td>
                             <td>${order.master || "Не назначен"}</td>
+                            <td>${order.comment}</td>
                         `;
 
                         tableBody.appendChild(row);
@@ -64,3 +66,4 @@
     </script>
 </body>
 </html>
+

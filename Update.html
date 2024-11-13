@@ -25,6 +25,9 @@
             <label for="master">Мастер</label>
             <input type="text" id="master" />
 
+            <label for="comment">Комментарий</label>
+            <input type="text" id="comment" />
+
             <button type="button" onclick="updateOrder()">Обновить заявку</button>
         </form>
         <div class="message" id="message"></div>
@@ -36,10 +39,12 @@
             const status = document.getElementById("status").value;
             const problemDesc = document.getElementById("problemDesc").value;
             const master = document.getElementById("master").value;
+            const comment = document.getElementById("comment").value;
             const updateData = {
                 status: status || null,
                 problemDesc: problemDesc || null,
-                master: master || null
+                master: master || null,
+                comment: comment || null
             };
 
             try {

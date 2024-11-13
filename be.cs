@@ -18,11 +18,11 @@ var app = builder.Build();
 app.UseCors("AllowAnyOrigin");
 
 
-List<order> bd = new List<order>()
-{
+List<order> bd =
+[   
     new order(1, DateTime.Now, "Ноутбук", "Проблема с экраном", "Экран треснул", "Иван Иванов", "в ожидании"),
     new order(2, new DateTime(2024, 10, 5), "Смартфон", "Проблема с экраном", "Экран треснул", "Степан Иванов", "в ожидании")
-};
+];
 
 bool isUpdatedStatus = false;
 string message = "";
@@ -55,12 +55,14 @@ app.MapPost("/{orderNumber}", (int orderNumber, OrderUpdate orderUpdate) =>
         return Results.NotFound(new { Message = $"Заявка с номером {orderNumber} не найдена" });
     }
 
-    if(orderToUpdate.Status != orderUpdate.Status)
+    if (!string.IsNullOrEmpty(orderUpdate.Status))
+    {  
+        if (orderToUpdate.Status != orderUpdate.Status)
     {
         orderToUpdate.Status = orderUpdate.Status;
         isUpdatedStatus = true;
-        message += "Статус заявки номер " + orderNumber + "изменен\n";
-    }
+        message += "Статус заявки номер " + orderNumber + " изменен";
+    }}
 
     if (!string.IsNullOrEmpty(orderUpdate.ProblemDesc))
     {
@@ -70,6 +72,11 @@ app.MapPost("/{orderNumber}", (int orderNumber, OrderUpdate orderUpdate) =>
     if (!string.IsNullOrEmpty(orderUpdate.Master))
     {
         orderToUpdate.Master = orderUpdate.Master;
+    }
+
+    if (!string.IsNullOrEmpty(orderUpdate.Comment))
+    {
+        orderToUpdate.Comment.Add (orderUpdate.Comment);
     }
 
     return Results.Ok(orderToUpdate);
@@ -87,6 +94,10 @@ app.MapGet("/filter/{param}", (string param) => bd.FindAll(o =>
 
 app.Run();
 
+record class OrderUpdate(string Status, string ProblemDesc, string Master, string Comment);
+
+record class OrderUpdateStatus(List<order> bd, string message);
+
 class order
 {
     public int Number { get; set; }
@@ -95,8 +106,9 @@ class order
     public string ProblemType { get; set; }
     public string ProblemDesc { get; set; }
     public string Client { get; set; }
-    public string Status { get; set; } = "в_ожидании";
+    public string Status { get; set; }
     public string Master { get; set; } = "Не назначен";
+    public List<string> Comment { get; set; } = [];
 
     public order(int number, DateTime dateAdd, string device, string problemType, string problemDesc, string client, string status)
     {
@@ -109,6 +121,3 @@ class order
         Status = status;
     }
 }
-record class OrderUpdate(string Status, string ProblemDesc, string Master);
-
-record class OrderUpdateStatus(List<order> bd, string message);
