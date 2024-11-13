@@ -2,6 +2,7 @@ using Microsoft.AspNetCore.Mvc;
 
 var builder = WebApplication.CreateBuilder(args);
 
+
 builder.Services.AddCors(options =>
 {
     options.AddPolicy("AllowAnyOrigin",
@@ -17,25 +18,18 @@ app.UseCors("AllowAnyOrigin");
 
 List<order> bd = new List<order>()
 {
-    new order(1, DateTime.Now, "Ноутбук", "Проблема с экраном", "Экран треснул", "Иван Иванов", "в ожидании")
+    new order(1, DateTime.Now, "Ноутбук", "Проблема с экраном", "Экран треснул", "Иван Иванов", "в ожидании"),
+    new order(1, new DateTime(2024, 10, 5), "Смартфон", "Проблема с экраном", "Экран треснул", "Степан Иванов", "в ожидании")
 };
 
 app.MapGet("/", () => bd);
 
-app.MapPost("/", (order newOrder) =>
+app.MapPost("/", ( order newOrder) =>
 {
-    newOrder.Number = bd.Any() ? bd.Max(o => o.Number) + 1 : 1;
-    newOrder.DateAdd = DateTime.Now;
-
-    if (string.IsNullOrEmpty(newOrder.Status))
-    {
-        newOrder.Status = "в_ожидании";
-    }
-
     bd.Add(newOrder);
-
     return Results.Created($"/{newOrder.Number}", newOrder);
 });
+
 
 
 app.MapPost("/{orderNumber}", (int orderNumber, OrderUpdate orderUpdate) =>
