@@ -1,0 +1,73 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8" />
+    <title></title>
+</head>
+<body>
+    <div class="container">
+        <h2>Обновить заявку</h2>
+        <form id="updateOrderForm">
+            <label for="orderNumber">Номер заявки</label>
+            <input type="number" id="orderNumber" required />
+
+            <label for="status">Статус</label>
+            <select id="status">
+                <option value="">Выберите статус</option>
+                <option value="в ожидании">в ожидании</option>
+                <option value="в обработке">в обработке</option>
+                <option value="завершено">завершено</option>
+            </select>
+
+            <label for="problemDesc">Описание проблемы</label>
+            <input type="text" id="problemDesc" />
+
+            <label for="master">Мастер</label>
+            <input type="text" id="master" />
+
+            <button type="button" onclick="updateOrder()">Обновить заявку</button>
+        </form>
+        <div class="message" id="message"></div>
+    </div>
+
+    <script>
+        async function updateOrder() {
+            const orderNumber = document.getElementById("orderNumber").value;
+            const status = document.getElementById("status").value;
+            const problemDesc = document.getElementById("problemDesc").value;
+            const master = document.getElementById("master").value;
+            const updateData = {
+                status: status || null,
+                problemDesc: problemDesc || null,
+                master: master || null
+            };
+
+            try {
+                const response = await fetch(`http://localhost:5248/${orderNumber}`, {
+                    method: "POST",
+                    headers: {
+                        "Content-Type": "application/json"
+                    },
+                    body: JSON.stringify(updateData)
+                });
+
+                const messageDiv = document.getElementById("message");
+
+                if (response.ok) {
+                    const updatedOrder = await response.json();
+                    messageDiv.innerHTML = "Заявка успешно обновлена!";
+                    messageDiv.style.color = "green";
+                    document.getElementById("updateOrderForm").reset();
+                } else {
+                    const error = await response.json();
+                    messageDiv.innerHTML = `Ошибка: ${error.Message}`;
+                    messageDiv.style.color = "red";
+                }
+            } catch (error) {
+                document.getElementById("message").innerHTML = `Ошибка: ${error.message}`;
+                document.getElementById("message").style.color = "red";
+            }
+        }
+    </script>
+</body>
+</html>

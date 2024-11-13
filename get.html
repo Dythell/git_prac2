@@ -1,0 +1,68 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8" />
+    <title>Заявки</title>
+</head>
+<body>
+    <div class="container">
+        <h2>Список заявок</h2>
+        <table id="ordersTable">
+            <thead>
+                <tr>
+                    <th>Номер заявки</th>
+                    <th>Дата добавления</th>
+                    <th>Устройство</th>
+                    <th>Тип проблемы</th>
+                    <th>Описание проблемы</th>
+                    <th>Клиент</th>
+                    <th>Статус</th>
+                    <th>Мастер</th>
+                </tr>
+            </thead>
+            <tbody>
+
+            </tbody>
+        </table>
+    </div>
+
+    <script>
+        async function loadOrders() {
+            try {
+                const response = await fetch("http://localhost:5248/");
+
+                if (response.ok) {
+                    const orders = await response.json();
+
+                    const tableBody = document.getElementById("ordersTable").querySelector("tbody");
+                    tableBody.innerHTML = "";
+
+                    orders.forEach(order => {
+                        const row = document.createElement("tr");
+
+                        row.innerHTML = `
+                            <td>${order.number}</td>
+                            <td>${new Date(order.dateAdd).toLocaleDateString()}</td>
+                            <td>${order.device}</td>
+                            <td>${order.problemType}</td>
+                            <td>${order.problemDesc}</td>
+                            <td>${order.client}</td>
+                            <td>${order.status}</td>
+                            <td>${order.master || "Не назначен"}</td>
+                        `;
+
+                        tableBody.appendChild(row);
+                    });
+                } else {
+                    console.error("Ошибка при получении заявок");
+                }
+            } catch (error) {
+                console.error("Ошибка:", error);
+            }
+        }
+
+        // Load orders when the page loads
+        window.onload = loadOrders;
+    </script>
+</body>
+</html>

@@ -1,0 +1,79 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8" />
+    <title>Добавление заявки</title>
+</head>
+<body>
+    <div class="container">
+        <h2>Добавить новую заявку</h2>
+        <form id="orderForm">
+            <label for="number">Номер заявки</label>
+            <input type="number" id="number" required />
+
+            <label for="device">Устройство</label>
+            <input type="text" id="device" required />
+
+            <label for="problemType">Тип проблемы</label>
+            <input type="text" id="problemType" required />
+
+            <label for="problemDesc">Описание проблемы</label>
+            <input type="text" id="problemDesc" required />
+
+            <label for="client">Клиент</label>
+            <input type="text" id="client" required />
+
+            <label for="status">Статус</label>
+            <select id="status">
+                <option value="в ожидании">в ожидании</option>
+                <option value="в обработке">в обработке</option>
+                <option value="завершено">завершено</option>
+            </select>
+
+            <button type="button" onclick="addOrder()">Добавить заявку</button>
+        </form>
+        <div class="message" id="message"></div>
+    </div>
+    <script>
+        async function addOrder() {
+            const orderData = {
+                number: parseInt(document.getElementById("number").value),
+                dateAdd: new Date().toISOString(),
+                device: document.getElementById("device").value,
+                problemType: document.getElementById("problemType").value,
+                problemDesc: document.getElementById("problemDesc").value,
+                client: document.getElementById("client").value,
+                status: document.getElementById("status").value
+            };
+
+            try {
+                const response = await fetch("http://localhost:5248/", {
+                    method: "POST",
+                    headers: {
+                        "Content-Type": "application/json"
+                    },
+                    body: JSON.stringify(orderData)
+                });
+
+                if (response.ok) {
+                    const result = await response.json();
+                    document.getElementById("message").innerHTML = "Заявка успешно добавлена!";
+                    document.getElementById("orderForm").reset();
+                } else {
+                    const error = await response.json();
+                    document.getElementById("message").innerHTML = `Ошибка: ${error.Message}`;
+                }
+            } catch (error) {
+                document.getElementById("message").innerHTML = `Ошибка: ${error.message}`;
+            }
+        }
+    </script>
+</body>
+</html>
+
+
+
+
+
+
+
